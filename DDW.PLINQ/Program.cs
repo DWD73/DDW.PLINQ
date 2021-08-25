@@ -10,7 +10,7 @@ namespace DDW.PLINQ
     {
         static void Main(string[] args)
         {
-            int countNumbers = 7000000;
+            int countNumbers = 100000;
             int index = 0;
             int sum = 0;
             int[] numbers = new int[countNumbers];
@@ -64,10 +64,7 @@ namespace DDW.PLINQ
             stopwatch3.Start();
             int sum3 = 0;
             object monitor = new object();
-            //(numbers.AsParallel().Select(x => x)).ForAll(delegate (int i) { sum3 += i; });
-            //sum3 = ParallelEnumerable.Range(0, countNumbers).Sum();
-            //Parallel.For(0, countNumbers, i => { lock (monitor) sum3 += i; });
-            //Parallel.For(0, countNumbers, i => { lock (monitor) sum3 += i; });
+            
             sum3 = numbers.Aggregate((total, n) => total + n);
             stopwatch3.Stop();
             GetResult(sum3, stopwatch3);
