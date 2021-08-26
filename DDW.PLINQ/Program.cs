@@ -8,11 +8,15 @@ namespace DDW.PLINQ
 {
     class Program
     {
+        static int sum2 = 0;
+
         static void Main(string[] args)
         {
-            int countNumbers = 100000;
+            int countNumbers = 7000000;
+            const int nChunks = 3;
             int index = 0;
             int sum = 0;
+            int sum3 = 0;
             int[] numbers = new int[countNumbers];
 
             Stopwatch sw = new Stopwatch();
@@ -31,10 +35,8 @@ namespace DDW.PLINQ
             Array.ForEach(numbers, delegate (int i) { sum += i; });
             stopwatch.Stop();
 
-            GetResult(sum, stopwatch);
-
-
-            var nChunks = 3;
+            GetResult(sum, stopwatch);            
+            
             var totalLength = numbers.Count();
             var chunkLength = (int)Math.Ceiling(totalLength / (double)nChunks);
 
@@ -44,7 +46,6 @@ namespace DDW.PLINQ
             Stopwatch stopwatch2 = new Stopwatch();
 
             stopwatch2.Start();
-
             for (int i = 0; i < nChunks; i++)
             {
 
@@ -53,7 +54,6 @@ namespace DDW.PLINQ
                 thread.Start(parts[i]);
                 thread.Join();
             }
-
             stopwatch2.Stop();
 
             GetResult(sum2, stopwatch2);
@@ -61,10 +61,7 @@ namespace DDW.PLINQ
             Console.WriteLine($"\nВыполнение суммирования массива PLINQ способом\n");
             Stopwatch stopwatch3 = new Stopwatch();
 
-            stopwatch3.Start();
-            int sum3 = 0;
-            object monitor = new object();
-            
+            stopwatch3.Start();                                
             sum3 = numbers.Aggregate((total, n) => total + n);
             stopwatch3.Stop();
             GetResult(sum3, stopwatch3);
@@ -74,14 +71,11 @@ namespace DDW.PLINQ
         {
             int time = stopwatch.Elapsed.Milliseconds;
             Console.WriteLine($"\tСумма чисел массива {sum}\n\tВремя выполнения : {time} мс.");
-        }
-
-        static int sum2 = 0;
+        }       
 
         private static void DoWork(Object obj)
         {
             IEnumerable<int> _obj = (IEnumerable<int>)obj;
-
             Array.ForEach(_obj.ToArray(), delegate (int i) { sum2 += i; });
         }
     }
